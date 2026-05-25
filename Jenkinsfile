@@ -2,11 +2,12 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven 3' 
+        maven 'Maven 3'
         jdk 'JDK 17'
     }
 
     stages {
+
         stage('Checkout') {
             steps {
                 checkout scm
@@ -16,15 +17,15 @@ pipeline {
         stage('Build Spring Backend') {
             steps {
                 dir('backend-spring') {
-                    sh 'mvn clean install'
+                    bat 'mvn clean install'
                 }
             }
         }
-        
+
         stage('Build Frontend') {
             steps {
-                sh 'npm install'
-                sh 'CI=false npm run build'
+                bat 'npm install'
+                bat 'set CI=false && npm run build'
             }
         }
 
@@ -32,7 +33,7 @@ pipeline {
             steps {
                 script {
                     echo 'Building Docker images...'
-                    sh 'docker-compose build'
+                    bat 'docker-compose build'
                 }
             }
         }
