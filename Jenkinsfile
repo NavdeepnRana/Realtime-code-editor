@@ -25,17 +25,40 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 bat 'npm install'
-                bat 'set CI=false && npm run build'
+
+                bat '''
+                set CI=false
+                npm run build
+                '''
             }
         }
 
-        stage('Docker Build and Push') {
+        stage('Docker Build') {
             steps {
                 script {
                     echo 'Building Docker images...'
                     bat 'docker-compose build'
                 }
             }
+        }
+
+        stage('Run Containers') {
+            steps {
+                script {
+                    echo 'Starting containers...'
+                    bat 'docker-compose up -d'
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline executed successfully!'
+        }
+
+        failure {
+            echo 'Pipeline failed!'
         }
     }
 }
